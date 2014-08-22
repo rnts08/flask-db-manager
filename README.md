@@ -1,4 +1,4 @@
 flask-db-manager
 ================
 
-Scratch for Flask DB manager with sqlalchemy
+Scratch-repo for Flask DB manager with sqlalchemy
