@@ -16,7 +16,6 @@ from functools import wraps
 """
 
 app = Flask(__name__)
-#app.config.from_object('config')
 db = SQLAlchemy(app)
 
 
@@ -47,7 +46,7 @@ app.config['SECRET_KEY'] = 'Banana!'
 import models
 
 """
-    utils.get_client_ip - Returns the remote IP address, checks the headers for
+    get_client_ip - Returns the remote IP address, checks the headers for
     X-Forwarded-For as well (if the application sits behind a proxy or similar).
 """
 def get_client_ip():
@@ -57,7 +56,7 @@ def get_client_ip():
         return request.remote_addr
 
 """
-    utils.requires_admin - Decorate the routes that requires administrator
+    requires_admin - Decorate the routes that requires administrator
     authentication, checks the session dictionary for 'is_admin', should be True
 """
 def requires_admin(f):
@@ -67,6 +66,9 @@ def requires_admin(f):
 
         if not is_admin:
             flash(u'Requires Admin Access', 'warning')
+            #### 
+            # Uncomment this and create the admin-login route for 
+            # some protection. This decorator does nothing but whining for now.
             #return redirect( url_for('admin_login') )
 
         return f(*args, **kwargs)
@@ -87,7 +89,7 @@ def admin_index():
 @requires_admin
 def init_db():
     db.create_all()
-    app.logger.info('%s created database tables' % get_client_ip())
+    app.logger.info('{ip} created database tables'.format(ip=get_client_ip()))
     flash(u'Database created', 'success')
     return redirect( url_for('show_tables') )
 
@@ -95,7 +97,7 @@ def init_db():
 @requires_admin
 def drop_db():
     db.drop_all()
-    app.logger.info('%s dropped database tables' % get_client_ip())
+    app.logger.info('{ip} dropped database tables'.format(ip=get_client_ip()))
     flash(u'Database dropped', 'success')
     return redirect( url_for('show_tables') )
 
@@ -177,7 +179,6 @@ if __name__ == '__main__':
     """
     app.run(host=app.config['HOST'], port=app.config['PORT'],
             debug=app.config['DEBUG'], use_reloader=True)
-    app.logger.addHandler(file_handler)
 
 """
 EOF
